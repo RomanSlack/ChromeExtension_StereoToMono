@@ -1,14 +1,18 @@
 {
-  "name": "Mono Audio Extension",
-  "description": "Forces stereo audio to play in mono in the browser",
+  "name": "Toggleable Mono Audio",
+  "description": "Force stereo audio to mono on any page, with an on/off toggle.",
   "version": "1.0",
   "manifest_version": 3,
-  "permissions": [],
+  "permissions": ["storage"],
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
       "js": ["contentScript.js"],
       "run_at": "document_idle"
     }
-  ]
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Toggle Mono Audio"
+  }
 }

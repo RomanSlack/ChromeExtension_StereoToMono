@@ -1,62 +1,89 @@
-// contentScript.js
-
 (function() {
-  // Create one AudioContext for the page
+  // Create a single AudioContext
   const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-  // Helper function to force an <audio> or <video> element into mono
-  function forceMono(element) {
-    // Create a source from the element
-    const source = audioCtx.createMediaElementSource(element);
+  // Keep track of which elements we've forced to mono
+  // so we can (optionally) “disconnect” them if toggled off.
+  const processedElements = new WeakSet();
 
-    // Create a splitter and merger
+  // 1. Force a given audio/video element into mono
+  function forceMono(element) {
+    // If we already processed this element, skip
+    if (processedElements.has(element)) return;
+
+    const source = audioCtx.createMediaElementSource(element);
     const splitter = audioCtx.createChannelSplitter(2);
     const merger = audioCtx.createChannelMerger(2);
 
     source.connect(splitter);
 
-    // Option 1: Use only the left channel for both sides
-    splitter.connect(merger, 0, 0); // left channel out -> left channel in
-    splitter.connect(merger, 0, 1); // left channel out -> right channel in
+    // -- Option A: Use left channel for both --
+    splitter.connect(merger, 0, 0); // left -> left
+    splitter.connect(merger, 0, 1); // left -> right
 
-    // Option 2 (comment out Option 1 above first):
-    // If you want a true mono with both channels averaged:
-    //   const leftGain = audioCtx.createGain();
-    //   const rightGain = audioCtx.createGain();
-    //   leftGain.gain.value = 0.5;
-    //   rightGain.gain.value = 0.5;
-    //
-    //   splitter.connect(leftGain, 0); // left channel
-    //   splitter.connect(rightGain, 1); // right channel
-    //
-    //   leftGain.connect(merger, 0, 0);
-    //   rightGain.connect(merger, 0, 0);
-    //
-    //   // Merge into single channel or connect to both (0, 0) and (0, 1)
+    // -- Option B (comment out A first): average left & right --
+    /*
+    const leftGain = audioCtx.createGain();
+    const rightGain = audioCtx.createGain();
+    leftGain.gain.value = 0.5;
+    rightGain.gain.value = 0.5;
 
-    // Finally connect to the output
+    splitter.connect(leftGain, 0); // left channel
+    splitter.connect(rightGain, 1); // right channel
+    leftGain.connect(merger, 0, 0);
+    rightGain.connect(merger, 0, 0);
+    // or connect to (0, 0) and (0, 1) if you want dual mono
+    */
+
     merger.connect(audioCtx.destination);
+    processedElements.add(element);
   }
 
-  // Attach on existing audio/video elements
-  const mediaElements = document.querySelectorAll('audio, video');
-  mediaElements.forEach((el) => {
-    // If the audio is already playing, forcing mono might cause a small glitch
-    // but typically it should be okay. Alternatively, handle on "play" event.
-    forceMono(el);
-  });
+  // 2. Attach the mono function to all existing media elements
+  function attachMonoToAllMedia() {
+    const mediaElements = document.querySelectorAll('audio, video');
+    mediaElements.forEach((el) => {
+      forceMono(el);
+    });
+  }
 
-  // Also watch for any newly added audio/video elements using MutationObserver
+  // 3. Observe DOM for newly added <audio>/<video> and attach mono automatically
   const observer = new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
       mutation.addedNodes.forEach((node) => {
-        if (node.tagName && (node.tagName.toLowerCase() === 'audio' || node.tagName.toLowerCase() === 'video')) {
+        if (
+          node.tagName &&
+          (node.tagName.toLowerCase() === 'audio' ||
+            node.tagName.toLowerCase() === 'video')
+        ) {
           forceMono(node);
         }
       });
     });
   });
-
   observer.observe(document.body, { childList: true, subtree: true });
 
+  // 4. Check storage for "monoEnabled" on load
+  chrome.storage.sync.get(['monoEnabled'], (result) => {
+    if (result.monoEnabled) {
+      attachMonoToAllMedia();
+    }
+  });
+
+  // 5. Listen for changes to the toggle
+  chrome.storage.onChanged.addListener((changes, areaName) => {
+    if (areaName === 'sync' && changes.monoEnabled) {
+      const isMonoNow = changes.monoEnabled.newValue;
+      if (isMonoNow) {
+        // Turn it on
+        attachMonoToAllMedia();
+      } else {
+        // Turn it off
+        // For a truly dynamic real-time “off,” we'd need to disconnect
+        // each node from the AudioContext. Easiest approach might be to
+        // reload the page or let the user know to refresh:
+        window.location.reload();
+      }
+    }
+  });
 })();
