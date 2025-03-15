@@ -1,14 +1,131 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="UTF-8" />
   <title>Mono Audio Toggle</title>
+  <style>
+    /* Basic reset and modern, clean font */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Segoe UI", "Frutiger", "Helvetica Neue", sans-serif;
+    }
+
+    body {
+      min-width: 220px;
+      min-height: 120px;
+      padding: 16px;
+      /* A translucent “glass” style background (only visible if the popup is large enough and behind content) */
+      background: rgba(255, 255, 255, 0.72);
+      backdrop-filter: blur(8px); /* Chrome supports this but note: some older browsers might not */
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    h1 {
+      font-size: 1.1rem;
+      margin-bottom: 8px;
+      text-align: center;
+      color: #333;
+    }
+
+    /* Container for the toggle and label text */
+    .toggle-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Custom toggle switch styling */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 26px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    /* The slider (the moving circle part) */
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(160deg, #ccc, #eee);
+      border-radius: 26px;
+      transition: 0.4s;
+      border: 1px solid #ccc;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      top: 3.7px;
+      background-color: #fff;
+      border-radius: 50%;
+      transition: 0.4s;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    input:checked + .slider {
+      background: linear-gradient(160deg, #66b2ff, #3fa9f5);
+      border: 1px solid #3fa9f5;
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(24px);
+    }
+
+    /* Optional 'round' style for the toggle switch slider */
+    .slider.round {
+      border-radius: 26px;
+    }
+    .slider.round:before {
+      border-radius: 50%;
+    }
+
+    /* Label for the toggle switch */
+    .toggle-label {
+      font-size: 0.9rem;
+      color: #444;
+    }
+
+    /* Subtle info text or instructions, if needed */
+    .info {
+      margin-top: 8px;
+      font-size: 0.75rem;
+      color: #666;
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
-  <label>
-    <input type="checkbox" id="mono-toggle">
-    Enable Mono Audio
-  </label>
+  <h1>Mono Audio</h1>
+  <div class="toggle-container">
+    <label class="switch">
+      <input type="checkbox" id="mono-toggle">
+      <span class="slider round"></span>
+    </label>
+    <span class="toggle-label">Enable Mono Audio</span>
+  </div>
+  <div class="info">
+    Toggle to force all stereo audio into mono.
+  </div>
+
   <script src="popup.js"></script>
 </body>
 </html>
