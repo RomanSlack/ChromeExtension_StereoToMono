@@ -70,7 +70,7 @@ Once installed, click the extension icon, enable **“Mono Audio,”** and enjoy
 
 ## Contributing
 
-Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/YourUser/StereoToMono/issues) to see what’s on our plate or propose a new idea.
+Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/RomanSlack/ChromeExtension_StereoToMono/issues) to see what’s on our plate or propose a new idea.
 
 ---
 
