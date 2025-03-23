@@ -28,7 +28,7 @@
     <img src="https://img.shields.io/github/issues/YourUser/StereoToMono" alt="Issues">
   </a>
   <!-- Chrome Web Store badge example (replace with your extension ID) -->
-  <a href="https://chrome.google.com/webstore/detail/stereotomono/abcd1234efgh5678">
+  <a href="https://chromewebstore.google.com/detail/stereotomono/lciockipefmcmeambghkinkjlckjkbmn?authuser=0&hl=en">
     <img src="https://img.shields.io/chrome-web-store/v/abcd1234efgh5678?label=chrome%20web%20store" alt="Chrome Web Store">
   </a>
 </p>
@@ -49,7 +49,7 @@
 ## Installation
 
 1. **Install via the Chrome Web Store**  
-   [StereoToMono on Chrome Web Store](https://chrome.google.com/webstore/detail/stereotomono/abcd1234efgh5678)
+   [StereoToMono on Chrome Web Store]([https://chromewebstore.google.com/detail/stereotomono/lciockipefmcmeambghkinkjlckjkbmn?authuser=0&hl=en]))
 
 2. **Or Load Unpacked**  
    - Download/cloning this repository.  
