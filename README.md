@@ -49,7 +49,7 @@
 ## Installation
 
 1. **Install via the Chrome Web Store**  
-   [StereoToMono on Chrome Web Store]([https://chromewebstore.google.com/detail/stereotomono/lciockipefmcmeambghkinkjlckjkbmn?authuser=0&hl=en]))
+   [StereoToMono on Chrome Web Store](https://chromewebstore.google.com/detail/stereotomono/lciockipefmcmeambghkinkjlckjkbmn?authuser=0&hl=en))
 
 2. **Or Load Unpacked**  
    - Download/cloning this repository.  
